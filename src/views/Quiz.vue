@@ -4,9 +4,7 @@
 </script>
 
 <template>
-  <header>Hello</header>
-  <router-view />
-  <footer>Goodbye</footer>
+  <h1>Quiz</h1>
 </template>
 
 <style>
