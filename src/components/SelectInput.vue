@@ -4,9 +4,11 @@
 </script>
 
 <template>
-  <!-- <header>Hello</header> -->
-  <router-view />
-  <!-- <footer>Goodbye</footer> -->
+    
+    <label for="selector">Username:</label><br>
+    <select type="text" v-model="username" id="selector">
+        <option></option>
+    </select>
 </template>
 
 <style>
