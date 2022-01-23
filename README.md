@@ -1,4 +1,4 @@
-# Assignment2_TriviaGame_vue
+# (vue) Trivia Game
 
 A trivia game made using vue.
 
@@ -11,16 +11,17 @@ It is an assignment for Noroff and is meant to teach about vue.
 
 ### Dependencies
 
-* I don't know yet
+* vue
+* npm
 
 ### Installing
 
 * Clone the folder into your system.
+* use 'npm install'
 
 ### Executing program
 
-* I don't know yet
-* To be seen
+* 'npm run dev' to run on localhost
 
 ## Help
 
@@ -28,8 +29,8 @@ Contact [@DamianRavn](https://github.com/DamianRavn) or [@livstella](https://git
 
 ## Authors
 
-[@DamianRavn](https://github.com/DamianRavn)
-[@livstella](https://github.com/livstella)
+* [@DamianRavn](https://github.com/DamianRavn)
+* [@livstella](https://github.com/livstella)
 
 ## License
 
