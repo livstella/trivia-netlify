@@ -38,7 +38,7 @@ const submitForm = (e)=>
                 currentDifficulty: currentDifficulty.value.toLowerCase(),
                 currentCatagory: currentCatagory.value,
            });
-           console.log(store.state)
+           router.push('quiz')
        }
    }
 }
