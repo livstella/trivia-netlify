@@ -1,7 +1,7 @@
 <script setup>
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import { onBeforeUnmount, onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -12,17 +12,22 @@ onMounted(()=>store.dispatch('fetchCatagories'));
 const difficulties = computed(()=> store.state.startPageData.difficulties);
 const catagories = computed(()=> store.state.startPageData.catagories);
 
-
+const form = ref(null);
 //Submit function
-const submitButtonPressed = (e)=> 
-{
-    
+const submitForm = (e)=> 
+{console.log(e)
+    //Have to be able to click anywhere on sreen to submit
+   if (e.target.nodeName == "FORM" || e.target.nodeName == "HTML" || e.target.nodeName == "BUTTON") 
+   {
+       form.value.requestSubmit()
+   }
 }
 </script>
 
 <template>
-  <h1>Welcome to the Quiz Start Page!</h1>
-  <form @submit.prevent="submitButtonPressed">
+<div class="start-page-wrapper" @click.stop="submitForm" v-click-outside="submitForm">
+    <h1>Welcome to the Quiz Start Page!</h1>
+  <form ref="form" @submit.prevent>
     <label for="usernameInput">Username:</label><br>
     <input type="text" required="true" placeholder="Input Username here" id="usernameInput"><br>
 
@@ -48,14 +53,13 @@ const submitButtonPressed = (e)=>
     <div v-else>Loading Data...</div>
     
 
-    <button type="submit" >Submit</button>
+    <button>Submit</button>
   </form>
+</div>
+  
   
 </template>
 
 <style scoped>
-#app 
-{
-    
-}
+
 </style>
