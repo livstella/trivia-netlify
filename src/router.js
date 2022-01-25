@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import StartPage from '/src/views/StartPage.vue';
 import QuizPage from '/src/views/Quiz.vue';
+import ResultPage from '/src/views/Result.vue';
 
 const routes = 
 [
@@ -17,7 +18,8 @@ const routes =
     {
         path: '/result',
         name: 'Result',
-        component: ()=> import('/src/views/Result.vue') /* Lazy loading */
+        component: ResultPage
+        //component: ()=> import('/src/views/Result.vue') /* Lazy loading */
     },
 ];
 

@@ -1,5 +1,6 @@
 <script>
-import { computed, ref, watch } from "vue";
+import {  ref, watch } from "vue";
+import router from "../router";
 export default {
   setup() {
 
@@ -11,11 +12,15 @@ export default {
     const numberOfAnswers = ref(0);
     const numberOfCorrectAnswers = ref(0);
     const error = ref(null);
+    
 
+
+//Wtaches for changes in NumberOfAnswers. Once equal to totalQuestions, sends to Result.vue
     watch(numberOfAnswers, ()=> {
-      if (numberOfAnswers.value==2){
-        alert(42)
-
+      if (numberOfAnswers.value===totalQuestions.value){
+        router.push({name: 'Result'})
+        
+        
       }
     })
 
