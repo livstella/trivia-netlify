@@ -15,7 +15,6 @@ export default {
           throw Error("No data");
         }
         quiz.value = await data.json();
-        console.log(quiz.value.results);
         console.log(quiz.value.results[numberOfQuestions.value].correct_answer);
       } catch (err) {
         error.value = err.message;
@@ -24,20 +23,55 @@ export default {
     };
 
     const onSubmit = () => {
-      if (answer.value == quiz.value.results[numberOfQuestions.value].correct_answer) {
+      if (
+        answer.value ==
+        quiz.value.results[numberOfQuestions.value].correct_answer
+      ) {
         alert("correct");
-        numberOfCorrectAnswers.value+=1
-        numberOfQuestions.value+=1
-        answer.value=""
+        numberOfCorrectAnswers.value += 1;
+        numberOfQuestions.value += 1;
+        answer.value = "";
       } else {
         alert("wrong answer");
-        numberOfQuestions.value+=1
-        answer.value=""
+        numberOfQuestions.value += 1;
+        answer.value = "";
       }
     };
-    
+    const trueFunction = () => {
+      if (
+        quiz.value.results[numberOfQuestions.value].correct_answer == "True"
+      ) {
+        alert("correct");
+        numberOfCorrectAnswers.value += 1;
+        numberOfQuestions.value += 1;
+      } else {
+        alert("wrong answer");
+        numberOfQuestions.value += 1;
+      }
+    };
+    const falseFunction = () => {
+      if (
+        quiz.value.results[numberOfQuestions.value].correct_answer == "False"
+      ) {
+        alert("correct");
+        numberOfCorrectAnswers.value += 1;
+        numberOfQuestions.value += 1;
+      } else {
+        alert("wrong answer");
+        numberOfQuestions.value += 1;
+      }
+    };
+
     load();
-    return { onSubmit, answer, quiz, numberOfQuestions, numberOfCorrectAnswers };
+    return {
+      onSubmit,
+      answer,
+      quiz,
+      numberOfQuestions,
+      numberOfCorrectAnswers,
+      trueFunction,
+      falseFunction
+    };
   },
 };
 </script>
@@ -45,20 +79,28 @@ export default {
 <template>
   <h1>Quiz</h1>
   <div v-if="quiz">
-    <p> <b>Question:</b></p>
-       <p>{{ quiz.results[numberOfQuestions].question }}</p>
+    <p><b>Question:</b></p>
+    <p>{{ quiz.results[numberOfQuestions].question }}</p>
   </div>
-  <div   class="boolean-question">
-<button @click="numberOfQuestions += 1">True</button>
-  <button>False</button>
+  <div
+    v-if="quiz.results[numberOfQuestions].type == 'boolean'"
+    class="boolean-question"
+  >
+    <button @click="trueFunction">True</button>
+    <button @click="falseFunction">False</button>
   </div>
-  <div  class="multiple-question">
- <button @click="onSubmit">Submit</button>
+  <div
+    v-if="quiz.results[numberOfQuestions].type == 'multiple'"
+    class="multiple-question"
+  >
+    <input type="text" v-model="answer" placeholder="type your answer here" />
+    <button @click="onSubmit">Submit</button>
   </div>
- 
-  <input type="text" v-model="answer" placeholder="type your answer here" />
-      <p>number of questions you have answered: {{ numberOfQuestions }}</p>
-      <p>number of questions you have answered correctly : {{ numberOfCorrectAnswers }}</p>
+  <p>number of questions you have answered: {{ numberOfQuestions }}</p>
+  <p>
+    number of questions you have answered correctly :
+    {{ numberOfCorrectAnswers }}
+  </p>
 </template>
 
 <style>
