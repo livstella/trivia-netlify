@@ -15,6 +15,7 @@ export default {
           throw Error("No data");
         }
         quiz.value = await data.json();
+        console.log(quiz.value.results);
         console.log(quiz.value.results[numberOfQuestions.value].correct_answer);
       } catch (err) {
         error.value = err.message;
@@ -46,12 +47,15 @@ export default {
   <div v-if="quiz">
     <p> <b>Question:</b></p>
        <p>{{ quiz.results[numberOfQuestions].question }}</p>
-
- 
   </div>
-  <button @click="numberOfQuestions += 1">True</button>
+  <div   class="boolean-question">
+<button @click="numberOfQuestions += 1">True</button>
   <button>False</button>
-  <button @click="onSubmit">Submit</button>
+  </div>
+  <div  class="multiple-question">
+ <button @click="onSubmit">Submit</button>
+  </div>
+ 
   <input type="text" v-model="answer" placeholder="type your answer here" />
       <p>number of questions you have answered: {{ numberOfQuestions }}</p>
       <p>number of questions you have answered correctly : {{ numberOfCorrectAnswers }}</p>
