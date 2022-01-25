@@ -1,5 +1,5 @@
 <script>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 export default {
   setup() {
 
@@ -11,6 +11,13 @@ export default {
     const numberOfAnswers = ref(0);
     const numberOfCorrectAnswers = ref(0);
     const error = ref(null);
+
+    watch(numberOfAnswers, ()=> {
+      if (numberOfAnswers.value==2){
+        alert(42)
+
+      }
+    })
 
 //Fetches data from Trivia API and sets the quiz variable to the result
 //Currently with a hardcoded URL. Should become dynamic
