@@ -27,10 +27,12 @@ const store = createStore
     },
     mutations:
     {
+        //userData
         setUserData: (state, payload) =>
         {
             state.userData = payload;
         },
+        //startPageData
         setStartPageCatagories: (state, payload) =>
         {
             state.startPageData.catagories = payload;
@@ -39,11 +41,18 @@ const store = createStore
         {
             state.startPageData.maxQuestionAmount = payload;
         },
-
-
+        //quizData
         setQuizFetchData: (state, payload) =>
         {
             state.quizData.quiz = payload;
+        },
+        setNumberOfAnswers: (state, payload) =>
+        {
+            state.quizData.numberOfCorrectAnswers = payload;
+        },
+        setNumberOfCorrectAnswers: (state, payload) =>
+        {
+            state.quizData.numberOfCorrectAnswers = payload;
         },
 
     },
@@ -71,18 +80,18 @@ const store = createStore
         },
 
         //Quizpage actions
-        async fetchQuizQuestions({commit})
+        async fetchQuizQuestions({commit, state})
         {
             try 
             {
                 const apiString = 'https://opentdb.com/api.php?amount=' + state.userData.numberOfQuestions + '&category=' + state.userData.currentCatagory + '&difficulty=' + state.userData.currentDifficulty;
                 let data = await fetch(apiString);
-                console.log(data)
                 if (!data.ok) 
                 {
                     throw Error("No data");
                 }
                 const quiz = await data.json();
+                console.log(quiz)
                 commit('setQuizFetchData', quiz)
             } 
             catch (err) 
