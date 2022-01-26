@@ -1,5 +1,5 @@
 <script>
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import store from "../store";
 import router from "../router";
 export default {
@@ -14,52 +14,40 @@ export default {
     const numberOfCorrectAnswers = computed(()=> store.state.quizData.numberOfCorrectAnswers);
 
     //Fetches data from Trivia API and updates the state
-    store.dispatch("fetchQuizQuestions");
-    
-    //Wtaches for changes in NumberOfAnswers. Once equal to totalQuestions, sends to Result.vue
-    watch(numberOfAnswers, () => {
-      if (numberOfAnswers.value >= totalQuestions.value) {
-        router.push({ name: "Result" });
-      }
-    });
+    store.dispatch("fetchQuizQuestions", router);
 
     //Function that handles user typed answer for questions of the type multiple
     const onSubmit = () => {
-      if (answer.value == quiz.value.results[numberOfAnswers.value].correct_answer) {
-        alert("correct");
-        store.commit("setNumberOfAnswers", numberOfAnswers.value + 1);
-        store.commit("setNumberOfCorrectAnswers", numberOfCorrectAnswers.value + 1);
-        answer.value = "";
-      } else {
-        alert("wrong answer");
-        store.commit("setNumberOfAnswers", numberOfAnswers.value + 1);
-        answer.value = "";
-      }
+      evaluateAnswer(quiz.value.results[numberOfAnswers.value].correct_answer ,  answer.value);
     };
 
     //Function that handles when user selects True for questions of the type boolean
     const trueFunction = () => {
-      if (quiz.value.results[numberOfAnswers.value].correct_answer == "True") {
-        alert("correct");
-        store.commit("setNumberOfAnswers", numberOfAnswers.value + 1);
-        store.commit("setNumberOfCorrectAnswers", numberOfCorrectAnswers.value + 1);
-      } else {
-        alert("wrong answer");
-        store.commit("setNumberOfAnswers", numberOfAnswers.value + 1);
-      }
+      evaluateAnswer(quiz.value.results[numberOfAnswers.value].correct_answer ,  "True");
     };
 
     //Function that handles when user selects False for questions of the type boolean
     const falseFunction = () => {
-      if (quiz.value.results[numberOfAnswers.value].correct_answer == "False") {
+      evaluateAnswer(quiz.value.results[numberOfAnswers.value].correct_answer ,  "False");
+    };
+    //Checks if the answer is correct and increases the numberofAnswers and numberOfCorrectAnswers vars
+    function evaluateAnswer(correctAnswer = "", userAnswer = "")
+    {
+      if (correctAnswer == userAnswer)
+      {
         alert("correct");
         store.commit("setNumberOfAnswers", numberOfAnswers.value + 1);
         store.commit("setNumberOfCorrectAnswers", numberOfCorrectAnswers.value + 1);
-      } else {
+      }
+      else
+      {
         alert("wrong answer");
         store.commit("setNumberOfAnswers", numberOfAnswers.value + 1);
       }
-    };
+      if (numberOfAnswers.value >= totalQuestions.value) {
+        router.push({ name: "Result" });
+      }
+    }
     
 
     return {
@@ -79,20 +67,20 @@ export default {
 <template>
   <h1>Quiz</h1>
   <!-- Only of the api loads succesfully is this section displayed -->
-  <div v-if="quiz">
+  <div v-if="quiz.results">
     <p><b>Question:</b></p>
     <p>{{ quiz.results[numberOfAnswers].question }}</p>
   </div>
   <!--If API does not load this is displayed -->
-  <div v-else>Loading quiestions...</div>
+  <div v-else>Loading Questions...</div>
 
   <!-- If the question is of the type Boolean this is displayed for the user to choose an answer  -->
-  <div v-if="quiz && quiz.results[numberOfAnswers].type == 'boolean'">
+  <div v-if="quiz.results && quiz.results[numberOfAnswers].type == 'boolean'">
     <button @click="trueFunction">True</button>
     <button @click="falseFunction">False</button>
   </div>
   <!-- If the question is of the type Multiple  this is displayed for the user to type an answer  -->
-  <div v-else-if="quiz && quiz.results[numberOfAnswers].type == 'multiple'">
+  <div v-else-if="quiz.results && quiz.results[numberOfAnswers].type == 'multiple'">
     <input type="text" v-model="answer" placeholder="type your answer here" />
     <button @click="onSubmit">Submit</button>
   </div>

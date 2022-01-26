@@ -12,7 +12,7 @@ const store = createStore
         },
         userData:
         {
-            username: '',
+            username: 'user1',
             numberOfQuestions: 1,
             currentDifficulty: '',
             currentCatagory: 0,
@@ -48,7 +48,7 @@ const store = createStore
         },
         setNumberOfAnswers: (state, payload) =>
         {
-            state.quizData.numberOfCorrectAnswers = payload;
+            state.quizData.numberOfAnswers = payload;
         },
         setNumberOfCorrectAnswers: (state, payload) =>
         {
@@ -80,8 +80,13 @@ const store = createStore
         },
 
         //Quizpage actions
-        async fetchQuizQuestions({commit, state})
+        async fetchQuizQuestions({commit, state}, router)
         {
+            if (!state.userData.username) 
+            {
+                router.push({name:"Home"});
+                window.alert('please insert username');
+            }
             try 
             {
                 const apiString = 'https://opentdb.com/api.php?amount=' + state.userData.numberOfQuestions + '&category=' + state.userData.currentCatagory + '&difficulty=' + state.userData.currentDifficulty;
