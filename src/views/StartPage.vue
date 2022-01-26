@@ -5,6 +5,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
+//https://trusting-fermi-72517c.netlify.app/
 const apiURL = "https://experis-assignment-api.herokuapp.com";
 const apiKey = "floppy-vitamin-cloud";
 
@@ -17,7 +18,7 @@ fetch(`${apiURL}/trivia`, {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ 
-            username: 'test', 
+            username: store.state.userData.username, 
             highScore: 0 
         })
     })
@@ -38,7 +39,7 @@ fetch(`${apiURL}/trivia`, {
 
 const store = useStore();
 //Action because its async call
-onMounted(() => store.dispatch("fetchCatagories"));
+onMounted(() => store.dispatch("fetchCatagories", catagoeriesHaveBeenLoaded));
 
 //Getting data from state
 const difficulties = computed(()=> store.state.startPageData.difficulties);
@@ -51,7 +52,7 @@ const router = useRouter();
 const username = ref("");
 const questionAmount = ref(0);
 const currentDifficulty = ref(difficulties.value[0]);
-const currentCatagory = ref(-1);
+const currentCatagory = ref("");
 
 //Submit used loosely i guess. No post or get made
 const submitForm = (e) => {
@@ -92,14 +93,17 @@ function validateInput() {
   return true;
 }
 
-const categoriesLoaded = () => {
-  const id = catagories.value[0].id;
+//When the catagories have been loaded, set the currentCatagory so that the selector shows a default value
+const catagoeriesHaveBeenLoaded = ()=> categoriesInit();
+const categoriesInit = () => {
+  const id = catagories.value[0].id.toString();
   currentCatagory.value = id;
   fetchMaxQuestions(id);
-  return true;
 };
 const changeCategory = (e) => {
-  fetchMaxQuestions(e.target.value);
+    const id = e.target.value;
+    currentCatagory.value = id;
+  fetchMaxQuestions(id);
 };
 const fetchMaxQuestions = (catagoryID) => {
   store.dispatch("fetchMaxQuestions", catagoryID);
@@ -148,11 +152,9 @@ const fetchMaxQuestions = (catagoryID) => {
       ><br />
 
       <!-- Catagories have to be fetched first, hence the if else -->
-      <div v-if="catagories.length > 0 && categoriesLoaded()">
-        <!-- this works because of the way js evaluates && statements  -->
+      <div v-if="catagories.length > 0">
         <label for="catagories">Select Catagory:</label><br />
         <select
-          @readystatechange="changeCategory"
           @change="changeCategory"
           v-model="currentCatagory"
           name="Choose Catagory"

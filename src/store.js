@@ -12,18 +12,31 @@ const store = createStore
         },
         userData:
         {
-            username: 'user1',
+            username: '',
             numberOfQuestions: 1,
             currentDifficulty: '',
-            currentCatagory: 0,
+            currentCatagory: '',
         },
         quizData:
         {
             quiz: [],
             numberOfAnswers: 0,
             numberOfCorrectAnswers: 0,
+            answerData:[]
         }
         
+    },
+    getters: 
+    {
+        getAllQuizQuestionsRandom: (state) =>
+        {
+            const tmp = [...state.quizData.quiz.results[state.quizData.numberOfAnswers].incorrect_answers, state.quizData.quiz.results[state.quizData.numberOfAnswers].correct_answer];
+            return tmp.sort((a, b) => 0.5 - Math.random());
+        },
+        getHighscore: (state) =>
+        {
+            return state.quizData.numberOfCorrectAnswers * 10;
+        }
     },
     mutations:
     {
@@ -54,17 +67,22 @@ const store = createStore
         {
             state.quizData.numberOfCorrectAnswers = payload;
         },
+        setAnswerData: (state, payload) =>
+        {
+            state.quizData.answerData.push(payload);
+        },
 
     },
     actions:
     {
         //Startpage actions
-        async fetchCatagories({ commit })
+        async fetchCatagories({ commit }, callback)
         {
             const res = await fetch('https://opentdb.com/api_category.php');
             const data = await res.json();
             const catagories = data.trivia_categories;
             commit('setStartPageCatagories', catagories);
+            callback();
         },
         async fetchMaxQuestions({ commit }, categoryID)
         {
@@ -96,7 +114,6 @@ const store = createStore
                     throw Error("No data");
                 }
                 const quiz = await data.json();
-                console.log(quiz)
                 commit('setQuizFetchData', quiz)
             } 
             catch (err) 

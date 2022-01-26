@@ -1,34 +1,23 @@
 <script>
 import { ref } from "vue";
+import store from "../store";
+import router from "../router";
 export default {
   setup() {
-    const quiz = ref([]);
     const error = ref(null);
-    const points = ref(10); //Should be updated dynamically
+    const points = store.getters.getHighscore;
     const apiURL = "https://experis-assignment-api.herokuapp.com";
-    const username = "test"; //Should be updated dynamically
-    const userId = 6; //Should be updated
+    const username = store.state.userData.username;
+    const quizAnswers = store.state.quizData.answerData;
+    const userId = 6; //Should be updated -with what?
     const apiKey = "floppy-vitamin-cloud";
     const userCurrentHighScore = ref(0);
     const highScoreText = ref("");
 
-    //This fetch is to be replaces with data from store
-    //________________________________________________________________
-    const load = async () => {
-      try {
-        let data = await fetch("https://opentdb.com/api.php?amount=10");
-        if (!data.ok) {
-          throw Error("No data");
-        }
-        quiz.value = await data.json();
-        console.log("data has been fteched ");
-      } catch (err) {
-        error.value = err.message;
-        console.log(error.value);
-      }
-      console.log("load")
-    };
-    ////_____________________________________________________________________________________
+    const toStartScreen = ()=>
+    {
+      router.push({name:"Home"});
+    }
 
     ///Fetches data on the user. Could potentially be updated from store
 
@@ -72,11 +61,10 @@ export default {
     };
 
 //Calls functions in order they are needed
-    load();
     userData();
     updateHighScore()
 
-    return { quiz, points, userCurrentHighScore};
+    return { points, userCurrentHighScore, quizAnswers, toStartScreen};
   },
 };
 </script>
@@ -90,15 +78,16 @@ export default {
   <p v-if="points > userCurrentHighScore"> <i> You got a new highscore!</i></p>
   <p v-if="points <= userCurrentHighScore"> <i> No new highscore for you</i></p>
   <ul>
-    <li v-for="item in quiz.results" :key="item.question">
-      <p>Question: {{ item.question }}</p>
+    <li v-for="answer in quizAnswers" :key="answer">
+      <p>Question: {{ answer.question }}</p>
       <p>
-        <b>Your answer:</b> Missing. <b> Correct answer:</b>
-        {{ item.correct_answer }}
+        <b>Your answer:</b> {{ answer.userAnswer }}. <b> Correct answer:</b>
+        {{ answer.correctAnswer }}
       </p>
       <br />
     </li>
   </ul>
+  <button @click="toStartScreen">Back to Start Screen!</button>
 </template>
 
 <style>

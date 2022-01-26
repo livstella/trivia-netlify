@@ -12,13 +12,14 @@ export default {
     const totalQuestions = computed(()=> store.state.userData.numberOfQuestions);
     const numberOfAnswers = computed(()=> store.state.quizData.numberOfAnswers);
     const numberOfCorrectAnswers = computed(()=> store.state.quizData.numberOfCorrectAnswers);
+    const quizQuestions = computed(()=> store.getters.getAllQuizQuestionsRandom);
 
     //Fetches data from Trivia API and updates the state
     store.dispatch("fetchQuizQuestions", router);
 
     //Function that handles user typed answer for questions of the type multiple
-    const onSubmit = () => {
-      evaluateAnswer(quiz.value.results[numberOfAnswers.value].correct_answer ,  answer.value);
+    const onSubmit = (e) => {
+      evaluateAnswer(quiz.value.results[numberOfAnswers.value].correct_answer ,  e.target.value);
     };
 
     //Function that handles when user selects True for questions of the type boolean
@@ -33,6 +34,12 @@ export default {
     //Checks if the answer is correct and increases the numberofAnswers and numberOfCorrectAnswers vars
     function evaluateAnswer(correctAnswer = "", userAnswer = "")
     {
+      store.commit('setAnswerData', 
+            {
+              userAnswer: userAnswer,
+              correctAnswer: correctAnswer,
+              question: quiz.value.results[numberOfAnswers.value].question,
+            });
       if (correctAnswer == userAnswer)
       {
         alert("correct");
@@ -57,6 +64,7 @@ export default {
       totalQuestions,
       numberOfAnswers,
       numberOfCorrectAnswers,
+      quizQuestions,
       trueFunction,
       falseFunction,
     };
@@ -81,8 +89,7 @@ export default {
   </div>
   <!-- If the question is of the type Multiple  this is displayed for the user to type an answer  -->
   <div v-else-if="quiz.results && quiz.results[numberOfAnswers].type == 'multiple'">
-    <input type="text" v-model="answer" placeholder="type your answer here" />
-    <button @click="onSubmit">Submit</button>
+    <button type="text" @click="onSubmit" v-for="question in quizQuestions" :key="question" :value="question">{{ question }}</button>
   </div>
   <!-- Shows the number of: Questions asnswer, questions answered correctly  -->
   <p>Total questions in this quiz: {{ totalQuestions }}</p>
