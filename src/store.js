@@ -16,8 +16,13 @@ const store = createStore
             numberOfQuestions: 1,
             currentDifficulty: '',
             currentCatagory: 0,
+        },
+        quizData:
+        {
+            quiz: [],
+            numberOfAnswers: 0,
+            numberOfCorrectAnswers: 0,
         }
-        
         
     },
     mutations:
@@ -34,9 +39,17 @@ const store = createStore
         {
             state.startPageData.maxQuestionAmount = payload;
         },
+
+
+        setQuizFetchData: (state, payload) =>
+        {
+            state.quizData.quiz = payload;
+        },
+
     },
     actions:
     {
+        //Startpage actions
         async fetchCatagories({ commit })
         {
             const res = await fetch('https://opentdb.com/api_category.php');
@@ -55,7 +68,28 @@ const store = createStore
                 hard: data.category_question_count.total_hard_question_count,
             };
             commit('setMaxQuestion', maxQuestionAmount);
-        }
+        },
+
+        //Quizpage actions
+        async fetchQuizQuestions({commit})
+        {
+            try 
+            {
+                const apiString = 'https://opentdb.com/api.php?amount=' + state.userData.numberOfQuestions + '&category=' + state.userData.currentCatagory + '&difficulty=' + state.userData.currentDifficulty;
+                let data = await fetch(apiString);
+                console.log(data)
+                if (!data.ok) 
+                {
+                    throw Error("No data");
+                }
+                const quiz = await data.json();
+                commit('setQuizFetchData', quiz)
+            } 
+            catch (err) 
+            {
+                console.log(err.message);
+            }
+        },
     }
 });
 

@@ -66,6 +66,7 @@ function validateInput()
 
 }
 
+//Set the default catagory value when it's ready and fetch maxquestions
 const categoriesLoaded = ()=>
 {
     const id = catagories.value[0].id;
@@ -73,6 +74,7 @@ const categoriesLoaded = ()=>
     fetchMaxQuestions(id);
     return true;
 } 
+//When the user changes the catagory, fetch max questions
 const changeCategory = (e) =>
 {
     fetchMaxQuestions(e.target.value);
