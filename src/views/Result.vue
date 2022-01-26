@@ -1,10 +1,11 @@
 <script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
+import totalQuestions from './Quiz.vue'
 </script>
 
 <template>
   <h1>Result</h1>
+<p>Amount of questions you got right: {{totalQuestions.value}}</p>
+
 </template>
 
 <style>
